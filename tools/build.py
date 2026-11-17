@@ -378,6 +378,8 @@ def main():
             llms.append(f"- [{it['name']}]({SITE}/zadaniya/{it['slug']}/) – {CATS[it['cat']][1]}")
     (ROOT / "llms.txt").write_text(noyo("\n".join(llms)) + "\n", encoding="utf-8")
     (ROOT / ".nojekyll").write_text("", encoding="utf-8")
+    # IndexNow (Bing – it feeds ChatGPT search – and Yandex): the key file sits in the site root, the URL list
+    # is sent by tools/indexnow.py after a publish.
     print(f"items {total}, pages {len(pages)}")
 
 main()
