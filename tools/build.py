@@ -96,7 +96,7 @@ PERSON = {
     "@type": "Person", "@id": SITE + "/#person", "name": "Артем Русов", "alternateName": "Artsiom Rusau",
     "jobTitle": "Инженер по тестированию и автор курсов по тестированию ПО", "url": SITE + "/",
     "sameAs": ["https://learn.rusau.net", "https://rusau.net", "https://youtube.com/@rusau", "https://t.me/qachanell",
-               "https://stepik.org/users/483341705", "https://www.linkedin.com/in/artsiomrusau/", "https://github.com/artichokeee"],
+               "https://stepik.org/users/rusau/profile", "https://www.linkedin.com/in/artsiomrusau/", "https://github.com/artichokeee"],
 }
 
 def course_link(cid, camp):
@@ -162,7 +162,7 @@ def layout(title, description, path, body, ld):
   <div><p class="foot-cap">Где еще</p><ul>
     <li><a href="https://youtube.com/@rusau">YouTube</a></li>
     <li><a href="https://t.me/qachanell">Telegram-канал</a></li>
-    <li><a href="https://stepik.org/users/483341705">Stepik</a></li>
+    <li><a href="https://stepik.org/users/rusau/profile">Stepik</a></li>
     <li><a href="https://www.linkedin.com/in/artsiomrusau/">LinkedIn</a></li>
     <li><a href="https://github.com/artichokeee/test-assignments">Задания на GitHub</a></li>
     <li><a href="https://github.com/artichokeee/stepik-api-cookbook">Stepik API для авторов</a></li>
