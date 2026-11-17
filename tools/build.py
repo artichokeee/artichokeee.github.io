@@ -124,6 +124,7 @@ def layout(title, description, path, body, ld):
 <title>{html.escape(title)}</title>
 <meta name="description" content="{html.escape(description)}">
 <link rel="canonical" href="{canonical}">
+<meta name="google-site-verification" content="CEiQYgfFYfiKZ8ehdia1Hx4UJYSL4c6hgZsJi24NUys">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Артем Русов">
 <meta property="og:title" content="{html.escape(title)}">
