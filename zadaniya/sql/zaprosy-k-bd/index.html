@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тестовое задание для тестировщика: Запросы к БД (SQL)</title>
+<meta name="description" content="Реальное тестовое задание по теме &quot;SQL&quot;: Допустим, что студенты должны ежемесячно выплачивать профсоюзный взнос в размере 100 рублей, при этом им разрешено платить частями…">
+<link rel="canonical" href="https://artichokeee.github.io/zadaniya/sql/zaprosy-k-bd/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Тестовое задание для тестировщика: Запросы к БД (SQL)">
+<meta property="og:description" content="Реальное тестовое задание по теме &quot;SQL&quot;: Допустим, что студенты должны ежемесячно выплачивать профсоюзный взнос в размере 100 рублей, при этом им разрешено платить частями…">
+<meta property="og:url" content="https://artichokeee.github.io/zadaniya/sql/zaprosy-k-bd/">
+<meta property="og:locale" content="ru_RU">
+<link rel="stylesheet" href="/style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Запросы к БД", "description": "Реальное тестовое задание по теме \"SQL\": Допустим, что студенты должны ежемесячно выплачивать профсоюзный взнос в размере 100 рублей, при этом им разрешено платить частями…", "inLanguage": "ru", "learningResourceType": "тестовое задание", "educationalLevel": "Junior", "isAccessibleForFree": true, "about": "SQL", "url": "https://artichokeee.github.io/zadaniya/sql/zaprosy-k-bd/", "author": {"@type": "Person", "name": "Артем Русов", "alternateName": "Artsiom Rusau", "jobTitle": "Инженер по тестированию и автор курсов по тестированию ПО", "url": "https://artichokeee.github.io/", "sameAs": ["https://learn.rusau.net", "https://rusau.net", "https://youtube.com/@rusau", "https://t.me/qachanell", "https://stepik.org/users/483341705", "https://www.linkedin.com/in/artsiomrusau/", "https://github.com/artichokeee"]}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://artichokeee.github.io/"}, {"@type": "ListItem", "position": 2, "name": "Тестовые задания", "item": "https://artichokeee.github.io/zadaniya/"}, {"@type": "ListItem", "position": 3, "name": "Запросы к БД", "item": "https://artichokeee.github.io/zadaniya/sql/zaprosy-k-bd/"}]}]}</script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/">Артем Русов</a>
+  <nav aria-label="Разделы"><a href="/zadaniya/">Тестовые задания</a><a href="https://learn.rusau.net?utm_source=github&utm_medium=pages&utm_campaign=gh-pages-nav">Rusau Learn</a></nav>
+</div></header>
+<main class="wrap">
+<nav class="crumbs" aria-label="Путь"><a href="/">Главная</a> / <a href="/zadaniya/">Тестовые задания</a> / <a href="/zadaniya/#sql">SQL</a></nav>
+<article>
+  <h1>Запросы к БД</h1>
+  <p class="lead">Тестовое задание для тестировщика из открытой коллекции на GitHub. Тема: SQL. Решение можно положить в портфолио.</p>
+  <p class="src"><a href="https://github.com/artichokeee/test-assignments/blob/main/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA%20%D1%82%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D1%8B%D1%85%20%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B9/SQL/%D0%97%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D1%8B%20%D0%BA%20%D0%91%D0%94.doc">Исходный файл задания (doc)</a></p>
+  
+  <div class="task">
+<p>Допустим, что студенты должны ежемесячно выплачивать профсоюзный взнос в размере 100 рублей, при этом им разрешено платить частями в течение месяца.</p>
+<p>Даны две таблицы:<br>студенты: Student (поля id, name, surname)<br>и<br>профсоюзные взносы: Payment (student_id, amount, payment_date).</p>
+<p>Считаем, что платеж студента всегда относится к тому месяцу, в который он платит взнос.<br>Если студент есть в таблице Student, то взнос он платить должен.</p>
+<p>Напишите SQL-запрос для БД Oracle, который позволит найти должников и сумму долга каждого из них профсоюзу за прошлый месяц<br>(дата запуска может быть любая).</p>
+<p>Есть таблица db<br>user_id - int32 - id сотрудника<br>boss_id - int32? - user_id руководителя<br>payment - double - зарплата в рублях<br>Напишите SQL запросы, которые отвечают на вопрос:<br>Какая средняя зп у руководителей?<br>Сколько в среднем прямых подчиненных у руководителей?<br>У каких сотрудников зп выше, чем у их руководителей</p>
+<p>Имеется две таблицы:<br>Таблица users :<br>Хранит в себе данные пользователя: его идентификатор, логин, имя и фамилию:<br>user_id , login , name , surname<br>Таблица pets :<br>Содержит в себе информацию о питомцах пользователя:<br>Идентификатор пользователя (внешний ключ), идентификатор животного, вид животного, его кличку и породу:<br>user_id, pet_id , type, nickname, breed<br>Напишите SQL-запрос, возвращающий фамилию и имя всех владельцев котов Абиссинской (Abyssinian) породы.<br>++ Отсортировать по алфавиту</p>
+  </div>
+</article>
+<aside class="cta">
+  <h2>Как подготовиться</h2>
+  <p>Разборы по теме этого задания – бесплатно, на платформе для обучения тестировщиков Rusau Learn:</p>
+  <ul><li><a href="https://learn.rusau.net/sql-dlya-testirovshchika?utm_source=github&utm_medium=pages&utm_campaign=gh-pages-sql">SQL для тестировщика</a></li><li><a href="https://learn.rusau.net/join-v-sql?utm_source=github&utm_medium=pages&utm_campaign=gh-pages-sql">JOIN в SQL</a></li><li><a href="https://learn.rusau.net/sql?utm_source=github&utm_medium=pages&utm_campaign=gh-pages-sql">Песочница SQL в браузере</a></li></ul>
+  <p>Курс по теме: <a href="https://learn.rusau.net/catalog/sql-rabochiy-den?utm_source=github&utm_medium=pages&utm_campaign=gh-pages-sql">Рабочий день тестировщика: тренажер по SQL и задачи на практике</a>. Программа курса открыта целиком до покупки.</p>
+</aside>
+</main>
+<footer class="wrap foot">
+  <p>Артем Русов – инженер по тестированию и автор курсов. Платформа для обучения тестировщиков <a href="https://learn.rusau.net?utm_source=github&utm_medium=pages&utm_campaign=gh-pages-footer">Rusau Learn</a> · <a href="https://youtube.com/@rusau">YouTube</a> · <a href="https://t.me/qachanell">Telegram</a> · <a href="https://github.com/artichokeee/test-assignments">тестовые задания на GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,56 @@
+# Артем Русов – тестовые задания и курсы по тестированию ПО
+
+> Артем Русов (Artsiom Rusau) – инженер по тестированию и автор курсов по тестированию ПО. Его курсы идут на платформе для обучения тестировщиков Rusau Learn (https://learn.rusau.net). Здесь – открытая коллекция реальных тестовых заданий для тестировщиков.
+
+## Разделы
+- [Тестовые задания](https://artichokeee.github.io/zadaniya/): 54 задания по API, вебу, мобильному тестированию, SQL, тест-дизайну и документации
+- [Rusau Learn](https://learn.rusau.net): курсы, разборы и тренажеры по тестированию ПО
+- [Описание платформы для ИИ](https://learn.rusau.net/llms.txt)
+
+## Задания
+- [API](https://artichokeee.github.io/zadaniya/api/api/) – API и Postman
+- [Postman + web + навык демо](https://artichokeee.github.io/zadaniya/api/postman-web-navyk-demo/) – API и Postman
+- [Postman + web](https://artichokeee.github.io/zadaniya/api/postman-web/) – API и Postman
+- [Postman + автотесты](https://artichokeee.github.io/zadaniya/api/postman-avtotesty/) – API и Postman
+- [Postman + работа с коллекциями](https://artichokeee.github.io/zadaniya/api/postman-rabota-s-kollekciyami/) – API и Postman
+- [Postman + теория](https://artichokeee.github.io/zadaniya/api/postman-teoriya/) – API и Postman
+- [Автоматизация](https://artichokeee.github.io/zadaniya/avtomatizaciya/avtomatizaciya/) – Автоматизация
+- [Автоматизация](https://artichokeee.github.io/zadaniya/avtomatizaciya/avtomatizaciya-2/) – Автоматизация
+- [Автоматизация](https://artichokeee.github.io/zadaniya/avtomatizaciya/avtomatizaciya-3/) – Автоматизация
+- [Авто + SQL](https://artichokeee.github.io/zadaniya/avtomatizaciya/avto-sql/) – Автоматизация
+- [Поиск селектора](https://artichokeee.github.io/zadaniya/avtomatizaciya/poisk-selektora/) – Автоматизация
+- [Документация + API](https://artichokeee.github.io/zadaniya/dokumentaciya/dokumentaciya-api/) – Тестовая документация
+- [Поиск багов на веб-странице](https://artichokeee.github.io/zadaniya/dokumentaciya/poisk-bagov-na-veb-stranice/) – Тестовая документация
+- [Поиск багов на скрине](https://artichokeee.github.io/zadaniya/dokumentaciya/poisk-bagov-na-skrine/) – Тестовая документация
+- [Поиск багов](https://artichokeee.github.io/zadaniya/dokumentaciya/poisk-bagov/) – Тестовая документация
+- [Тест-кейсы](https://artichokeee.github.io/zadaniya/dokumentaciya/test-keysy/) – Тестовая документация
+- [Тестирование редактирования пользователя](https://artichokeee.github.io/zadaniya/dokumentaciya/testirovanie-redaktirovaniya-polzovatelya/) – Тестовая документация
+- [Тестирование регистрации](https://artichokeee.github.io/zadaniya/dokumentaciya/testirovanie-registracii/) – Тестовая документация
+- [Тестирование страницы](https://artichokeee.github.io/zadaniya/dokumentaciya/testirovanie-stranicy/) – Тестовая документация
+- [Тестовые сценарии](https://artichokeee.github.io/zadaniya/dokumentaciya/testovye-scenarii/) – Тестовая документация
+- [Чек-лист + кейсы](https://artichokeee.github.io/zadaniya/dokumentaciya/chek-list-keysy/) – Тестовая документация
+- [Чек-лист для формы регистрации](https://artichokeee.github.io/zadaniya/dokumentaciya/chek-list-dlya-formy-registracii/) – Тестовая документация
+- [Веб + ситуационный кейс + тестирование двери](https://artichokeee.github.io/zadaniya/obshchie/veb-situacionnyy-keys-testirovanie-dveri/) – Общие задания
+- [Задание по всем темам](https://artichokeee.github.io/zadaniya/obshchie/zadanie-po-vsem-temam/) – Общие задания
+- [Логика + Linux + SQL](https://artichokeee.github.io/zadaniya/obshchie/logika-linux-sql/) – Общие задания
+- [Общее задание по всем темам](https://artichokeee.github.io/zadaniya/obshchie/obshchee-zadanie-po-vsem-temam/) – Общие задания
+- [Теория + веб](https://artichokeee.github.io/zadaniya/obshchie/teoriya-veb/) – Общие задания
+- [Теория + техники + тестирование](https://artichokeee.github.io/zadaniya/obshchie/teoriya-tehniki-testirovanie/) – Общие задания
+- [Тестирование приложения](https://artichokeee.github.io/zadaniya/obshchie/testirovanie-prilozheniya/) – Общие задания
+- [Тестирование мобильной игры](https://artichokeee.github.io/zadaniya/mobile/testirovanie-mobilnoy-igry/) – Мобильное тестирование
+- [Задачи по SQL](https://artichokeee.github.io/zadaniya/sql/zadachi-po-sql/) – SQL
+- [Запросы к БД](https://artichokeee.github.io/zadaniya/sql/zaprosy-k-bd/) – SQL
+- [Классы](https://artichokeee.github.io/zadaniya/test-dizayn/klassy/) – Тест-дизайн
+- [Техники тест-дизайна](https://artichokeee.github.io/zadaniya/test-dizayn/tehniki-test-dizayna/) – Тест-дизайн
+- [Тестирование Яндекс-почты](https://artichokeee.github.io/zadaniya/veb/testirovanie-yandeks-pochty/) – Веб-тестирование
+- [Веб + api](https://artichokeee.github.io/zadaniya/veb/veb-api/) – Веб-тестирование
+- [Веб](https://artichokeee.github.io/zadaniya/veb/veb/) – Веб-тестирование
+- [Тестирование веб + ситуационный кейс](https://artichokeee.github.io/zadaniya/veb/testirovanie-veb-situacionnyy-keys/) – Веб-тестирование
+- [Тестирование веб + тестовая документация](https://artichokeee.github.io/zadaniya/veb/testirovanie-veb-testovaya-dokumentaciya/) – Веб-тестирование
+- [Тестирование веб с макетом и требованиями](https://artichokeee.github.io/zadaniya/veb/testirovanie-veb-s-maketom-i-trebovaniyami/) – Веб-тестирование
+- [Тестирование веб+SQL](https://artichokeee.github.io/zadaniya/veb/testirovanie-veb-sql/) – Веб-тестирование
+- [Тестирование веб, API и сниффинг на mobile](https://artichokeee.github.io/zadaniya/veb/testirovanie-veb-api-i-sniffing-na-mobile/) – Веб-тестирование
+- [Тестирование веб-приложений](https://artichokeee.github.io/zadaniya/veb/testirovanie-veb-prilozheniy/) – Веб-тестирование
+- [Тестирование веб](https://artichokeee.github.io/zadaniya/veb/testirovanie-veb/) – Веб-тестирование
+- [Тестирование верстки + web](https://artichokeee.github.io/zadaniya/veb/testirovanie-verstki-web/) – Веб-тестирование
+- [Тестирование верстки + макет + требования](https://artichokeee.github.io/zadaniya/veb/testirovanie-verstki-maket-trebovaniya/) – Веб-тестирование
