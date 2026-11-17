@@ -1,27 +1,30 @@
-# Build the GitHub Pages showcase: home, catalog of test assignments, one page per assignment,
-# sitemap, robots, llms.txt. Text comes from tools/extract.py (doc/docx/pdf/txt of artichokeee/test-assignments).
+# Build the GitHub Pages showcase in the Rusau Learn skin: home with courses and FAQ, catalog of test
+# assignments, one page per assignment, sitemap, robots, llms.txt.
 #
-#   python3 tools/extract.py /tmp/ta-text      # once, from a fresh clone of test-assignments
+#   python3 tools/extract.py /tmp/ta-text      # once, from a fresh clone of artichokeee/test-assignments
 #   python3 tools/build.py /tmp/ta-text        # writes the site into the repo root
 #
-# Why a site and not only README: links in GitHub READMEs are nofollow and docx/pdf are barely read by search
-# engines and AI assistants; plain HTML pages on github.io are indexed and cited.
+# Why a site and not only README: links in GitHub READMEs are nofollow, and docx/pdf are barely read by search
+# engines and AI assistants; plain HTML pages on github.io are indexed, cited and pass link weight.
+# Text rules (Артем's public voice): no "ё", straight quotes, en dash.
 import hashlib, html, json, re, sys, unicodedata
 from datetime import date
 from pathlib import Path
 from urllib.parse import quote as _quote
 
+TEXT = Path(sys.argv[1])
+ROOT = Path(__file__).resolve().parent.parent
+SRC_ROOT = Path("/Users/rusau/Documents/test-assignments/Список тестовых заданий")
+SITE = "https://artichokeee.github.io"
+LEARN = "https://learn.rusau.net"
+TODAY = date.today().isoformat()
+MIN_CHARS = 300
+
 # macOS keeps "й" decomposed (и + U+0306); GitHub paths are composed – an unnormalised link is a 404.
 def quote(s):
     return _quote(unicodedata.normalize("NFC", s))
 
-TEXT = Path(sys.argv[1])
-ROOT = Path(__file__).resolve().parent.parent
-SITE = "https://artichokeee.github.io"
-LEARN = "https://learn.rusau.net"
 REPO = "https://github.com/artichokeee/test-assignments/blob/main/" + quote("Список тестовых заданий")
-TODAY = date.today().isoformat()
-MIN_CHARS = 300
 
 def plural(n, one, few, many):
     d, h = n % 10, n % 100
@@ -31,31 +34,29 @@ def utm(url, campaign):
     sep = "&" if "?" in url else "?"
     return f"{url}{sep}utm_source=github&utm_medium=pages&utm_campaign={campaign}"
 
+def noyo(s):
+    return s.replace("ё", "е").replace("Ё", "Е")
+
+COURSES = {c["id"]: c for c in json.loads((ROOT / "tools" / "courses.json").read_text(encoding="utf-8"))}
+
+# Category: slug, title, description, free guides on the platform, course id for the card.
 CATS = {
-    "API": ("api", "API и Postman", "Задания на тестирование API: запросы в Postman, коллекции, переменные, автотесты, проверка ответов сервера.",
-            [("Тестирование API", "/testirovanie-api"), ("Postman для тестировщика", "/postman-dlya-testirovshchika")],
-            ("Тестирование API в Postman с нуля: REST API, Swagger, Греция", "/catalog/rest-api-postman-greciya")),
-    "Automation": ("avtomatizaciya", "Автоматизация", "Задания для автоматизаторов: селекторы, сценарии автотестов, связка с SQL.",
-            [("Автоматизация тестирования", "/avtomatizaciya-testirovaniya"), ("Пирамида тестирования", "/piramida-testirovaniya")],
-            ("Тестирование ПО с нуля. Продвинутый курс тестировщика с ИИ", "/catalog/testirovanie-po-prodvinutyy")),
-    "Documentation": ("dokumentaciya", "Тестовая документация", "Чек-листы, тест-кейсы, баг-репорты и поиск ошибок по скриншотам и страницам.",
-            [("Чек-лист и тест-кейс", "/chek-list-i-test-kejs"), ("Баг-репорт", "/bag-report"), ("Ошибки в тестовой документации", "/oshibki-v-testovoy-dokumentacii")],
-            ("Тестирование ПО. Тренажеры для тестировщика с ИИ", "/catalog/prakticheskie-trenazhery")),
+    "API": ("api", "API и Postman", "Запросы в Postman, коллекции, переменные, автотесты, проверка ответов сервера.",
+            [("Тестирование API", "/testirovanie-api"), ("Postman для тестировщика", "/postman-dlya-testirovshchika")], "restapi"),
+    "Automation": ("avtomatizaciya", "Автоматизация", "Селекторы, сценарии автотестов, связка автотестов с SQL.",
+            [("Автоматизация тестирования", "/avtomatizaciya-testirovaniya"), ("Пирамида тестирования", "/piramida-testirovaniya")], "pro"),
+    "Documentation": ("dokumentaciya", "Тестовая документация", "Чек-листы, тест-кейсы, баг-репорты, поиск ошибок по скриншотам и страницам.",
+            [("Чек-лист и тест-кейс", "/chek-list-i-test-kejs"), ("Баг-репорт", "/bag-report"), ("Ошибки в тестовой документации", "/oshibki-v-testovoy-dokumentacii")], "trainers"),
     "General": ("obshchie", "Общие задания", "Задания по всем темам сразу: теория, техники тест-дизайна, веб, логика, Linux и SQL.",
-            [("Как стать тестировщиком", "/kak-stat-testirovshchikom"), ("Вопросы на собеседовании тестировщика", "/voprosy-na-sobesedovanii-testirovshchika")],
-            ("Тестирование с нуля. Теория+Практика. Базовый курс тестировщика (бесплатный)", "/catalog/testirovanie-po-bazovyy")),
-    "Mobile": ("mobile", "Мобильное тестирование", "Тестирование мобильных приложений и игр, тестовая ферма устройств.",
-            [("Тестирование мобильных приложений", "/testirovanie-mobilnyh-prilozheniy"), ("Charles Proxy", "/charles-proxy")],
-            ("Тестирование ПО с нуля. Продвинутый курс тестировщика с ИИ", "/catalog/testirovanie-po-prodvinutyy")),
-    "SQL": ("sql", "SQL", "Запросы к базе данных: выборки, JOIN, группировки и задачи на данных.",
-            [("SQL для тестировщика", "/sql-dlya-testirovshchika"), ("JOIN в SQL", "/join-v-sql"), ("Песочница SQL в браузере", "/sql")],
-            ("Рабочий день тестировщика: тренажер по SQL и задачи на практике", "/catalog/sql-rabochiy-den")),
-    "Test Design": ("test-dizayn", "Тест-дизайн", "Классы эквивалентности, граничные значения и другие техники тест-дизайна на задачах.",
-            [("Классы эквивалентности и граничные значения", "/klassy-ekvivalentnosti-i-granichnye-znacheniya"), ("Pairwise-тестирование", "/pairwise-testirovanie")],
-            ("Тестирование ПО. Тренажеры для тестировщика с ИИ", "/catalog/prakticheskie-trenazhery")),
-    "Web": ("veb", "Веб-тестирование", "Тестирование веб-приложений, верстки по макету и требованиям, связка с API и SQL.",
-            [("DevTools для тестировщика", "/devtools-dlya-testirovshchika"), ("Тестирование полей ввода и веб-форм", "/testirovanie-poley-vvoda-i-veb-form")],
-            ("Тестирование с нуля. Теория+Практика. Базовый курс тестировщика (бесплатный)", "/catalog/testirovanie-po-bazovyy")),
+            [("Как стать тестировщиком", "/kak-stat-testirovshchikom"), ("Вопросы на собеседовании тестировщика", "/voprosy-na-sobesedovanii-testirovshchika")], "basic"),
+    "Mobile": ("mobile", "Мобильное тестирование", "Мобильные приложения и игры, тестовая ферма устройств.",
+            [("Тестирование мобильных приложений", "/testirovanie-mobilnyh-prilozheniy"), ("Charles Proxy", "/charles-proxy")], "pro"),
+    "SQL": ("sql", "SQL", "Запросы к базе данных: выборки, JOIN, группировки, задачи на данных.",
+            [("SQL для тестировщика", "/sql-dlya-testirovshchika"), ("JOIN в SQL", "/join-v-sql"), ("Песочница SQL в браузере", "/sql")], "sql"),
+    "Test Design": ("test-dizayn", "Тест-дизайн", "Классы эквивалентности, граничные значения и другие техники на задачах.",
+            [("Классы эквивалентности и граничные значения", "/klassy-ekvivalentnosti-i-granichnye-znacheniya"), ("Pairwise-тестирование", "/pairwise-testirovanie")], "trainers"),
+    "Web": ("veb", "Веб-тестирование", "Веб-приложения, верстка по макету и требованиям, связка с API и SQL.",
+            [("DevTools для тестировщика", "/devtools-dlya-testirovshchika"), ("Тестирование полей ввода и веб-форм", "/testirovanie-poley-vvoda-i-veb-form")], "basic"),
 }
 
 # Typos in file names are fixed in titles only; the files themselves stay as the repository has them.
@@ -82,7 +83,7 @@ def paragraphs(t):
         lines = [l.strip() for l in block.splitlines() if l.strip()]
         if not lines:
             continue
-        if all(re.match(r"^([•\-–*]|\d+[.)])\s*", l) for l in lines) and len(lines) > 1:
+        if len(lines) > 1 and all(re.match(r"^([•\-–*]|\d+[.)])\s*", l) for l in lines):
             items = "".join(f"<li>{html.escape(re.sub(r'^([•\-–*]|\d+[.)])\s*', '', l))}</li>" for l in lines)
             out.append(f"<ul>{items}</ul>")
         else:
@@ -90,16 +91,30 @@ def paragraphs(t):
     return "\n".join(out)
 
 PERSON = {
-    "@type": "Person", "name": "Артем Русов", "alternateName": "Artsiom Rusau",
-    "jobTitle": "Инженер по тестированию и автор курсов по тестированию ПО",
-    "url": SITE + "/",
+    "@type": "Person", "@id": SITE + "/#person", "name": "Артем Русов", "alternateName": "Artsiom Rusau",
+    "jobTitle": "Инженер по тестированию и автор курсов по тестированию ПО", "url": SITE + "/",
     "sameAs": ["https://learn.rusau.net", "https://rusau.net", "https://youtube.com/@rusau", "https://t.me/qachanell",
                "https://stepik.org/users/483341705", "https://www.linkedin.com/in/artsiomrusau/", "https://github.com/artichokeee"],
 }
 
+def course_link(cid, camp):
+    return utm(f"{LEARN}/catalog/{COURSES[cid]['learn']}", camp)
+
+def course_card(cid, camp, tag="h3"):
+    c = COURSES[cid]
+    badge = ""
+    if c.get("learnFree"):
+        badge = '<span class="badge free">Бесплатно</span>'
+    elif c.get("badge"):
+        badge = f'<span class="badge">{html.escape(c["badge"][1])}</span>'
+    return f"""<a class="course" href="{course_link(cid, camp)}">
+  <img src="/assets/covers/{cid}.jpg" alt="Обложка курса: {html.escape(c['title'])}" width="640" height="357" loading="lazy">
+  <span class="course-body">{badge}<{tag} class="course-title">{html.escape(c['title'])}</{tag}><span class="course-text">{html.escape(c['short'])}</span></span>
+</a>"""
+
 def layout(title, description, path, body, ld):
     canonical = SITE + path
-    return f"""<!DOCTYPE html>
+    return noyo(f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -108,38 +123,73 @@ def layout(title, description, path, body, ld):
 <meta name="description" content="{html.escape(description)}">
 <link rel="canonical" href="{canonical}">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Артем Русов">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{canonical}">
+<meta property="og:image" content="{SITE}/assets/covers/pro.jpg">
 <meta property="og:locale" content="ru_RU">
+<link rel="icon" href="/assets/mark.png">
+<link rel="preload" href="/assets/fonts/golos.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/style.css">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/">Артем Русов</a>
-  <nav aria-label="Разделы"><a href="/zadaniya/">Тестовые задания</a><a href="{utm(LEARN, 'gh-pages-nav')}">Rusau Learn</a></nav>
+<header class="top"><div class="wrap top-row">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" aria-hidden="true" width="40" height="53"><span><b>Артем Русов</b><small>тестирование ПО</small></span></a>
+  <nav aria-label="Разделы"><a href="/#kursy">Курсы</a><a href="/zadaniya/">Тестовые задания</a><a href="/#voprosy">Вопросы</a></nav>
+  <a class="btn btn-sm" href="{utm(LEARN + '/', 'gh-pages-header')}">Платформа</a>
 </div></header>
-<main class="wrap">
+<main>
 {body}
 </main>
-<footer class="wrap foot">
-  <p>Артем Русов – инженер по тестированию и автор курсов. Платформа для обучения тестировщиков <a href="{utm(LEARN, 'gh-pages-footer')}">Rusau Learn</a> · <a href="https://youtube.com/@rusau">YouTube</a> · <a href="https://t.me/qachanell">Telegram</a> · <a href="https://github.com/artichokeee/test-assignments">тестовые задания на GitHub</a></p>
-</footer>
+<footer class="foot"><div class="wrap foot-row">
+  <div class="foot-about">
+    <p class="foot-brand"><img src="/assets/mark.png" alt="" aria-hidden="true" width="34" height="45"> Артем Русов</p>
+    <p>Инженер по тестированию и автор курсов по тестированию ПО. Курсы идут на платформе для обучения тестировщиков <a href="{utm(LEARN + '/', 'gh-pages-footer')}">Rusau Learn</a>.</p>
+  </div>
+  <div><p class="foot-cap">Бесплатно</p><ul>
+    <li><a href="{course_link('basic', 'gh-pages-footer')}">Базовый курс тестировщика</a></li>
+    <li><a href="{course_link('tests', 'gh-pages-footer')}">Тесты и вопросы для тестировщика</a></li>
+    <li><a href="/zadaniya/">Тестовые задания</a></li>
+    <li><a href="{utm(LEARN + '/kursy-po-testirovaniyu', 'gh-pages-footer')}">Курсы по тестированию: с чего начать</a></li>
+  </ul></div>
+  <div><p class="foot-cap">Где еще</p><ul>
+    <li><a href="https://youtube.com/@rusau">YouTube</a></li>
+    <li><a href="https://t.me/qachanell">Telegram-канал</a></li>
+    <li><a href="https://stepik.org/users/483341705">Stepik</a></li>
+    <li><a href="https://www.linkedin.com/in/artsiomrusau/">LinkedIn</a></li>
+    <li><a href="https://github.com/artichokeee/test-assignments">Задания на GitHub</a></li>
+  </ul></div>
+</div></footer>
 </body>
 </html>
-"""
+""")
 
-def cta(cat_key):
-    _, _, _, guides, course = CATS[cat_key]
-    camp = f"gh-pages-{CATS[cat_key][0]}"
+def guides_aside(cat_key):
+    slug, _, _, guides, cid = CATS[cat_key]
+    camp = f"gh-pages-{slug}"
     g = "".join(f'<li><a href="{utm(LEARN + p, camp)}">{html.escape(n)}</a></li>' for n, p in guides)
-    return f"""<aside class="cta">
-  <h2>Как подготовиться</h2>
-  <p>Разборы по теме этого задания – бесплатно, на платформе для обучения тестировщиков Rusau Learn:</p>
+    return f"""<aside class="prep">
+  <h2>Как подготовиться к такому заданию</h2>
+  <p>Бесплатные разборы по теме на платформе для обучения тестировщиков Rusau Learn:</p>
   <ul>{g}</ul>
-  <p>Курс по теме: <a href="{utm(LEARN + course[1], camp)}">{html.escape(course[0])}</a>. Программа курса открыта целиком до покупки.</p>
+  <p class="muted">Курс по теме – программа открыта целиком до покупки:</p>
+  <div class="one-course">{course_card(cid, camp, 'p')}</div>
 </aside>"""
+
+FAQ = [
+    ("Где найти тестовые задания для тестировщика?",
+     "В открытой коллекции на этом сайте: реальные тестовые задания от компаний для ручных тестировщиков и автоматизаторов – API и Postman, веб, мобильные приложения, SQL, тест-дизайн и тестовая документация. Те же задания лежат файлами в репозитории test-assignments на GitHub."),
+    ("Как подготовиться к тестовому заданию на позицию тестировщика?",
+     "Решите два-три задания из коллекции по своей теме, сравните решение с требованиями и оформите его как для портфолио. Теорию по каждой теме – тест-дизайн, документацию, API, SQL – можно закрыть бесплатными разборами на платформе Rusau Learn, а проверить знания – бесплатным курсом \"Тесты и вопросы для тестировщика\"."),
+    ("С чего начать обучение тестированию с нуля?",
+     "С бесплатного курса \"Тестирование с нуля. Теория+Практика. Базовый курс тестировщика\": теория тестирования, техники тест-дизайна, тест-кейсы и баг-репорты, веб, мобильные приложения, SQL, API, git и bash. Дальше – практика на тренажерах и курс по поиску работы."),
+    ("Есть ли бесплатные курсы по тестированию ПО?",
+     "Да. Бесплатны базовый курс тестировщика, \"Тесты и вопросы для тестировщика\", \"Эффективное обучение\", \"Цифровая грамотность с нуля\" и новогодний квест \"Старый Новый Баг!\". Все они идут на платформе Rusau Learn."),
+    ("Что такое Rusau Learn?",
+     "Платформа для обучения тестировщиков, где идут курсы Артема Русова: от основ тестирования до API, SQL, мобильного тестирования и подготовки к собеседованию. У курсов проверка развернутых ответов с разбором, помощник по заданиям и сертификат по итогам. Программа каждого курса открыта целиком до покупки."),
+]
 
 def main():
     items, seen = [], {}
@@ -153,8 +203,7 @@ def main():
             name = re.sub(r"^\d+\.\s*", "", unicodedata.normalize("NFC", f.stem))
             for a, b in FIX.items():
                 name = name.replace(a, b)
-            src_files = [p for p in (Path("/Users/rusau/Documents/test-assignments/Список тестовых заданий") / cat_dir.name).iterdir() if p.stem == f.stem]
-            src = src_files[0].name if src_files else f.name
+            src = next((p.name for p in (SRC_ROOT / cat_dir.name).iterdir() if unicodedata.normalize("NFC", p.stem) == unicodedata.normalize("NFC", f.stem)), f.name)
             item = {"cat": cat_dir.name, "name": name, "text": scrub(raw), "chars": len(raw.strip()),
                     "file": f"{REPO}/{quote(cat_dir.name)}/{quote(src)}", "ext": Path(src).suffix.lower()}
             # The same text under two file names (SQL) is one assignment, not two pages.
@@ -164,11 +213,10 @@ def main():
             seen[digest] = item
             items.append(item)
     # Images and spreadsheets have no text: they stay in the catalog as links to the file.
-    src_root = Path("/Users/rusau/Documents/test-assignments/Список тестовых заданий")
     for cat in CATS:
-        for p in sorted((src_root / cat).glob("*")):
+        for p in sorted((SRC_ROOT / cat).glob("*")):
             if p.suffix.lower() in (".png", ".xlsx"):
-                items.append({"cat": cat, "name": re.sub(r"^\d+\.\s*", "", p.stem), "text": "", "chars": 0,
+                items.append({"cat": cat, "name": re.sub(r"^\d+\.\s*", "", unicodedata.normalize("NFC", p.stem)), "text": "", "chars": 0,
                               "file": f"{REPO}/{quote(cat)}/{quote(p.name)}", "ext": p.suffix.lower(), "dups": []})
 
     used = set()
@@ -178,8 +226,9 @@ def main():
         while slug in used:
             slug, n = f"{base}-{n}", n + 1
         used.add(slug)
-        it["slug"] = slug
-        it["page"] = it["chars"] >= MIN_CHARS
+        it["slug"], it["page"] = slug, it["chars"] >= MIN_CHARS
+    total = len(items)
+    n_tasks = lambda n: f'{n} {plural(n, "задание", "задания", "заданий")}'
 
     pages = []
     for it in items:
@@ -190,22 +239,27 @@ def main():
         first = re.sub(r"\s+", " ", it["text"]).strip()
         desc = f"Реальное тестовое задание по теме \"{cat_title}\": {first[:130].rstrip()}…"
         path = f"/zadaniya/{it['slug']}/"
-        files = "".join(f'<li><a href="{u}">ещё одна копия файла</a></li>' for u in it["dups"])
-        body = f"""<nav class="crumbs" aria-label="Путь"><a href="/">Главная</a> / <a href="/zadaniya/">Тестовые задания</a> / <a href="/zadaniya/#{cat_slug}">{html.escape(cat_title)}</a></nav>
+        files = "".join(f' · <a href="{u}">копия файла</a>' for u in it["dups"])
+        body = f"""<div class="wrap page">
+<nav class="crumbs" aria-label="Путь"><a href="/">Главная</a> / <a href="/zadaniya/">Тестовые задания</a> / <a href="/zadaniya/#{cat_slug}">{html.escape(cat_title)}</a></nav>
+<div class="task-grid">
 <article>
+  <p class="eyebrow">Тестовое задание · {html.escape(cat_title)}</p>
   <h1>{html.escape(it['name'])}</h1>
-  <p class="lead">Тестовое задание для тестировщика из открытой коллекции на GitHub. Тема: {html.escape(cat_title)}. Решение можно положить в портфолио.</p>
-  <p class="src"><a href="{it['file']}">Исходный файл задания ({it['ext'].lstrip('.')})</a></p>
-  {f'<ul class="src">{files}</ul>' if files else ''}
+  <p class="lead">Реальное тестовое задание для тестировщика из открытой коллекции. Решение можно положить в портфолио.</p>
+  <p class="src"><a href="{it['file']}">Исходный файл ({it['ext'].lstrip('.')})</a>{files}</p>
   <div class="task">
 {paragraphs(it['text'])}
   </div>
 </article>
-{cta(it['cat'])}"""
+{guides_aside(it['cat'])}
+</div>
+</div>"""
         ld = {"@context": "https://schema.org", "@graph": [
             {"@type": "LearningResource", "name": it["name"], "description": desc, "inLanguage": "ru",
              "learningResourceType": "тестовое задание", "educationalLevel": "Junior", "isAccessibleForFree": True,
-             "about": cat_title, "url": SITE + path, "author": PERSON},
+             "about": cat_title, "url": SITE + path, "author": {"@id": SITE + "/#person"}},
+            PERSON,
             {"@type": "BreadcrumbList", "itemListElement": [
                 {"@type": "ListItem", "position": 1, "name": "Главная", "item": SITE + "/"},
                 {"@type": "ListItem", "position": 2, "name": "Тестовые задания", "item": SITE + "/zadaniya/"},
@@ -215,77 +269,112 @@ def main():
         out.write_text(layout(title, desc, path, body, ld), encoding="utf-8")
         pages.append(path)
 
-    # Catalog
+    # ── Catalog ──
     blocks = []
     for cat, (cat_slug, cat_title, cat_desc, _, _) in CATS.items():
+        mine = sorted((i for i in items if i["cat"] == cat), key=lambda i: i["name"])
         lis = []
-        for it in sorted((i for i in items if i["cat"] == cat), key=lambda i: i["name"]):
+        for it in mine:
             if it["page"]:
                 lis.append(f'<li><a href="/zadaniya/{it["slug"]}/">{html.escape(it["name"])}</a></li>')
             else:
-                lis.append(f'<li><a href="{it["file"]}">{html.escape(it["name"])}</a> <span class="muted">– файл {it["ext"].lstrip(".")}</span></li>')
-        blocks.append(f'<section id="{cat_slug}"><h2>{html.escape(cat_title)}</h2><p class="muted">{html.escape(cat_desc)}</p><ul>{"".join(lis)}</ul></section>')
-    total = len(items)
-    cat_body = f"""<h1>Тестовые задания для тестировщиков</h1>
-<p class="lead">{total} {plural(total, "реальное тестовое задание", "реальных тестовых задания", "реальных тестовых заданий")} от компаний для ручных тестировщиков и автоматизаторов: API и Postman, веб, мобильные приложения, SQL, тест-дизайн, тестовая документация. Коллекция открыта на <a href="https://github.com/artichokeee/test-assignments">GitHub</a>, новые задания принимаются через Pull Request.</p>
-<p>Решенное задание можно положить в портфолио. Подготовиться к тестовому помогут бесплатные разборы и курсы на платформе для обучения тестировщиков <a href="{utm(LEARN, 'gh-pages-catalog')}">Rusau Learn</a>.</p>
-<div class="cats">{''.join(blocks)}</div>"""
-    cat_ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Тестовые задания для тестировщиков",
-              "url": SITE + "/zadaniya/", "inLanguage": "ru", "author": PERSON, "numberOfItems": total}
+                lis.append(f'<li><a href="{it["file"]}">{html.escape(it["name"])}</a> <span class="muted">· файл {it["ext"].lstrip(".")}</span></li>')
+        blocks.append(f'<section class="cat" id="{cat_slug}"><h2>{html.escape(cat_title)} <span class="count">{n_tasks(len(mine))}</span></h2><p class="muted">{html.escape(cat_desc)}</p><ul>{"".join(lis)}</ul></section>')
+    cat_body = f"""<section class="hero hero-small"><div class="wrap">
+  <nav class="crumbs" aria-label="Путь"><a href="/">Главная</a> / Тестовые задания</nav>
+  <h1>Тестовые задания для тестировщиков</h1>
+  <p class="lead">{total} {plural(total, "реальное тестовое задание", "реальных тестовых задания", "реальных тестовых заданий")} от компаний для ручных тестировщиков и автоматизаторов. Коллекция открыта на <a href="https://github.com/artichokeee/test-assignments">GitHub</a>, новые задания принимаются через Pull Request.</p>
+</div></section>
+<div class="wrap page"><div class="cats">{''.join(blocks)}</div>
+<aside class="prep wide"><h2>Подготовиться к тестовому</h2><p>Бесплатные разборы по каждой теме и курсы с практикой – на платформе для обучения тестировщиков Rusau Learn.</p><p><a class="btn" href="{utm(LEARN + '/kursy-po-testirovaniyu', 'gh-pages-catalog')}">Курсы по тестированию</a></p></aside>
+</div>"""
+    cat_ld = {"@context": "https://schema.org", "@graph": [
+        {"@type": "CollectionPage", "name": "Тестовые задания для тестировщиков", "url": SITE + "/zadaniya/", "inLanguage": "ru",
+         "author": {"@id": SITE + "/#person"}, "mainEntity": {"@type": "ItemList", "numberOfItems": len(pages),
+         "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": SITE + p} for i, p in enumerate(pages)]}},
+        PERSON]}
     (ROOT / "zadaniya").mkdir(exist_ok=True)
     (ROOT / "zadaniya" / "index.html").write_text(layout("Тестовые задания для тестировщиков: API, веб, SQL, мобильные, автоматизация",
         f"{total} {plural(total, 'реальное тестовое задание', 'реальных тестовых задания', 'реальных тестовых заданий')} для тестировщиков и автоматизаторов: API, веб, мобильные приложения, SQL, тест-дизайн и документация.",
         "/zadaniya/", cat_body, cat_ld), encoding="utf-8")
 
-    # Home
-    home = f"""<h1>Артем Русов&nbsp;– инженер по тестированию и автор курсов по тестированию ПО</h1>
-<p class="lead">Учу тестированию ПО с нуля: курсы прошли более ста тысяч человек. Курс "Тестирование ПО с нуля" – победитель Stepik Awards 2025 в номинации "Прорыв года", а в октябре 2025 Stepik назвал меня автором месяца.</p>
-<section>
-  <h2>Rusau Learn</h2>
-  <p>Rusau Learn – платформа для обучения тестировщиков, где идут мои курсы: от основ тестирования и тест-дизайна до API, SQL, мобильного тестирования и подготовки к собеседованию. У курсов проверка развернутых ответов с разбором, помощник по заданиям и сертификат по итогам. Программа каждого курса открыта целиком до покупки.</p>
-  <p><a class="btn" href="{utm(LEARN + '/', 'gh-pages-home')}">Курсы на Rusau Learn</a></p>
+    # ── Home ──
+    order = ["basic", "tests", "learning", "pro", "trainers", "sql", "restapi", "graphql", "simulator", "itguide", "newyear", "digital"]
+    cards = "".join(course_card(cid, "gh-pages-home") for cid in order if cid in COURSES)
+    cat_tiles = "".join(
+        f'<a class="tile" href="/zadaniya/#{s}"><b>{html.escape(t)}</b><span>{n_tasks(sum(1 for i in items if i["cat"] == c))}</span></a>'
+        for c, (s, t, _, _, _) in CATS.items())
+    faq = "".join(f'<details class="qa"{" open" if i == 0 else ""}><summary><h3>{html.escape(q)}</h3></summary><p>{html.escape(a)}</p></details>' for i, (q, a) in enumerate(FAQ))
+    home = f"""<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <p class="chip">Учу тестированию с 2019 года</p>
+    <h1>Артем Русов&nbsp;– инженер по тестированию и автор курсов по тестированию ПО</h1>
+    <p class="lead">Курсы по тестированию с нуля, тренажеры с проверкой и тестовые задания от компаний. Путь собран по шагам – от первого термина до собеседования.</p>
+    <p class="actions"><a class="btn" href="{utm(LEARN + '/', 'gh-pages-home')}">Курсы на Rusau Learn</a><a class="btn btn-ghost" href="/zadaniya/">Тестовые задания</a></p>
+    <ul class="facts">
+      <li><b>100 000+</b><span>человек прошли курсы</span></li>
+      <li><b>Stepik Awards 2025</b><span>"Прорыв года" у курса "Тестирование ПО с нуля"</span></li>
+      <li><b>{total}</b><span>{plural(total, "тестовое задание", "тестовых задания", "тестовых заданий")} в открытой коллекции</span></li>
+    </ul>
+  </div>
+  <img class="hero-art" src="/assets/mark.png" alt="Арти – помощник на курсах Rusau Learn" width="232" height="306">
+</div></section>
+
+<section class="band" id="platforma"><div class="wrap">
+  <h2>Rusau Learn – платформа для обучения тестировщиков</h2>
+  <p class="lead">Здесь идут мои курсы. У каждого курса свой мир и карта уроков, проверка развернутых ответов с разбором, помощник по заданиям и сертификат по итогам. Программа каждого курса открыта целиком до покупки, а пройденное на Stepik можно перенести.</p>
+</div></section>
+
+<section class="wrap page" id="kursy">
+  <h2>Курсы по тестированию ПО</h2>
+  <p class="muted">Пять курсов бесплатны. Ссылки ведут на страницы курсов с полной программой.</p>
+  <div class="courses">{cards}</div>
 </section>
-<section>
-  <h2>Бесплатно</h2>
-  <ul>
-    <li><a href="{utm(LEARN + '/catalog/testirovanie-po-bazovyy', 'gh-pages-home')}">Тестирование с нуля. Теория+Практика. Базовый курс тестировщика</a></li>
-    <li><a href="{utm(LEARN + '/catalog/testirovanie-po-testy', 'gh-pages-home')}">Тесты и вопросы для тестировщика</a> – проверить знания перед собеседованием</li>
-    <li><a href="{utm(LEARN + '/kursy-po-testirovaniyu', 'gh-pages-home')}">Все курсы по тестированию ПО и путь по ним</a></li>
-    <li><a href="/zadaniya/">Тестовые задания для тестировщиков</a> – {total} {plural(total, "реальное задание", "реальных задания", "реальных заданий")} от компаний</li>
-  </ul>
+
+<section class="wrap page" id="zadaniya">
+  <h2>Тестовые задания для тестировщиков</h2>
+  <p class="muted">Реальные задания от компаний, каждое – отдельной страницей с текстом и разбором, как к нему подготовиться.</p>
+  <div class="tiles">{cat_tiles}</div>
 </section>
-<section>
-  <h2>Где еще</h2>
-  <ul>
-    <li><a href="https://youtube.com/@rusau">YouTube</a> – уроки и разборы по тестированию</li>
-    <li><a href="https://t.me/qachanell">Telegram-канал</a></li>
-    <li><a href="https://stepik.org/users/483341705">Stepik</a></li>
-    <li><a href="https://www.linkedin.com/in/artsiomrusau/">LinkedIn</a></li>
-  </ul>
+
+<section class="wrap page" id="voprosy">
+  <h2>Частые вопросы</h2>
+  <div class="faq">{faq}</div>
 </section>"""
-    home_ld = {"@context": "https://schema.org", "@graph": [PERSON | {"@id": SITE + "/#person"},
+    home_ld = {"@context": "https://schema.org", "@graph": [PERSON,
         {"@type": "WebSite", "name": "Артем Русов", "url": SITE + "/", "inLanguage": "ru", "author": {"@id": SITE + "/#person"}},
         {"@type": "EducationalOrganization", "name": "Rusau Learn", "url": LEARN, "description": "Платформа для обучения тестировщиков",
-         "founder": {"@id": SITE + "/#person"}}]}
-    (ROOT / "index.html").write_text(layout("Артем Русов – курсы по тестированию ПО и платформа Rusau Learn",
-        "Артем Русов – инженер по тестированию и автор курсов. Платформа для обучения тестировщиков Rusau Learn, бесплатные курсы и тестовые задания.",
+         "founder": {"@id": SITE + "/#person"}},
+        {"@type": "ItemList", "name": "Курсы по тестированию ПО", "itemListElement": [
+            {"@type": "ListItem", "position": i + 1, "item": {"@type": "Course", "name": noyo(COURSES[c]["title"]), "description": noyo(COURSES[c]["short"]),
+             "url": f"{LEARN}/catalog/{COURSES[c]['learn']}", "inLanguage": "ru", "isAccessibleForFree": bool(COURSES[c].get("learnFree")),
+             "provider": {"@type": "Organization", "name": "Rusau Learn", "url": LEARN}}} for i, c in enumerate(order)]},
+        {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": noyo(q), "acceptedAnswer": {"@type": "Answer", "text": noyo(a)}} for q, a in FAQ]}]}
+    (ROOT / "index.html").write_text(layout("Артем Русов – курсы по тестированию ПО, тестовые задания и платформа Rusau Learn",
+        "Артем Русов – инженер по тестированию и автор курсов. Платформа для обучения тестировщиков Rusau Learn, бесплатные курсы и реальные тестовые задания от компаний.",
         "/", home, home_ld), encoding="utf-8")
 
     (ROOT / "404.html").write_text(layout("Страница не найдена", "Такой страницы нет.", "/404.html",
-        '<h1>Страница не найдена</h1><p><a href="/zadaniya/">Тестовые задания</a> · <a href="/">Главная</a></p>', {"@context": "https://schema.org", "@type": "WebPage"}), encoding="utf-8")
+        '<div class="wrap page"><h1>Страница не найдена</h1><p><a href="/zadaniya/">Тестовые задания</a> · <a href="/">Главная</a></p></div>',
+        {"@context": "https://schema.org", "@type": "WebPage"}), encoding="utf-8")
 
     urls = ["/", "/zadaniya/"] + pages
     (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n" for u in urls) + "</urlset>\n", encoding="utf-8")
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
-    llms = [f"# Артем Русов – тестовые задания и курсы по тестированию ПО", "",
-            "> Артем Русов (Artsiom Rusau) – инженер по тестированию и автор курсов по тестированию ПО. Его курсы идут на платформе для обучения тестировщиков Rusau Learn (https://learn.rusau.net). Здесь – открытая коллекция реальных тестовых заданий для тестировщиков.", "",
-            "## Разделы", f"- [Тестовые задания]({SITE}/zadaniya/): {total} {plural(total, 'задание', 'задания', 'заданий')} по API, вебу, мобильному тестированию, SQL, тест-дизайну и документации",
-            f"- [Rusau Learn]({LEARN}): курсы, разборы и тренажеры по тестированию ПО", f"- [Описание платформы для ИИ]({LEARN}/llms.txt)", "", "## Задания"]
+    llms = ["# Артем Русов – курсы по тестированию ПО и тестовые задания", "",
+            "> Артем Русов (Artsiom Rusau) – инженер по тестированию и автор курсов по тестированию ПО; курсы прошли более ста тысяч человек. Его курсы идут на платформе для обучения тестировщиков Rusau Learn (https://learn.rusau.net). На этом сайте – открытая коллекция реальных тестовых заданий для тестировщиков.", "",
+            "## Разделы",
+            f"- [Тестовые задания]({SITE}/zadaniya/): {total} {plural(total, 'задание', 'задания', 'заданий')} по API, вебу, мобильному тестированию, SQL, тест-дизайну и документации",
+            f"- [Rusau Learn]({LEARN}): курсы, разборы и тренажеры по тестированию ПО", f"- [Описание платформы для ИИ]({LEARN}/llms.txt)", "", "## Курсы"]
+    for c in order:
+        cc = COURSES[c]
+        llms.append(f"- [{cc['title']}]({LEARN}/catalog/{cc['learn']}){' – бесплатный' if cc.get('learnFree') else ''}: {cc['short']}")
+    llms += ["", "## Задания"]
     for it in items:
         if it["page"]:
             llms.append(f"- [{it['name']}]({SITE}/zadaniya/{it['slug']}/) – {CATS[it['cat']][1]}")
-    (ROOT / "llms.txt").write_text("\n".join(llms) + "\n", encoding="utf-8")
+    (ROOT / "llms.txt").write_text(noyo("\n".join(llms)) + "\n", encoding="utf-8")
     (ROOT / ".nojekyll").write_text("", encoding="utf-8")
     print(f"items {total}, pages {len(pages)}")
 

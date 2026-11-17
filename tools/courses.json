@@ -1,0 +1,110 @@
+[
+ {
+  "id": "basic",
+  "title": "Тестирование с нуля. Теория+Практика. Базовый курс тестировщика",
+  "short": "Теория и практика для первого шага: что такое тестирование, как искать баги и оформлять находки.",
+  "learn": "testirovanie-po-bazovyy",
+  "learnFree": true,
+  "badge": [
+   "free",
+   "Бесплатно"
+  ]
+ },
+ {
+  "id": "digital",
+  "title": "Цифровая грамотность с нуля",
+  "short": "Открытия Арти: компьютер, файлы, интернет и безопасность – для тех, кто начинает с самого начала.",
+  "learn": "cifrovaya-gramotnost",
+  "learnFree": true,
+  "badge": null
+ },
+ {
+  "id": "pro",
+  "title": "Тестирование ПО с нуля. Продвинутый курс тестировщика с ИИ",
+  "short": "Тест-дизайн, SQL, API, Git, CI/CD, портфолио и поддержка. Задания проверяет ИИ, а не только автотест.",
+  "learn": "testirovanie-po-prodvinutyy",
+  "learnFree": null,
+  "badge": [
+   "hit",
+   "Хит"
+  ]
+ },
+ {
+  "id": "tests",
+  "title": "Тестирование ПО с нуля. Тесты и вопросы для тестировщика",
+  "short": "Проверка знаний по всей программе: вопросы с разбором, чтобы найти пробелы до собеседования.",
+  "learn": "testirovanie-po-testy",
+  "learnFree": true,
+  "badge": null
+ },
+ {
+  "id": "trainers",
+  "title": "Тестирование ПО. Тренажеры для тестировщика с ИИ",
+  "short": "Требования, баги, DevTools, SQL и API – всё руками, с автопроверкой и разбором ошибок.",
+  "learn": "prakticheskie-trenazhery",
+  "learnFree": null,
+  "badge": null
+ },
+ {
+  "id": "sql",
+  "title": "Рабочий день тестировщика: тренажер по SQL и задачи на практике",
+  "short": "День за днём разбираем задачи с базой данных так, как они приходят на работе.",
+  "learn": "sql-rabochiy-den",
+  "learnFree": null,
+  "badge": null
+ },
+ {
+  "id": "newyear",
+  "title": "Старый Новый Баг! Новогодний квест для тестировщика",
+  "short": "Новогодний курс-игра: ищем баги там, где их никто не ждал.",
+  "learn": "novogodniy-bag",
+  "learnFree": true,
+  "badge": null
+ },
+ {
+  "id": "restapi",
+  "title": "Тестирование API в Postman с нуля: REST API, Swagger, Греция",
+  "short": "Курс-игра: запросы, коллекции, авторизация и переменные – через сюжет и задания.",
+  "learn": "rest-api-postman-greciya",
+  "learnFree": null,
+  "badge": [
+   "hit",
+   "Хит"
+  ]
+ },
+ {
+  "id": "graphql",
+  "title": "Тестирование GraphQL API в Postman: мифы Древнего Египта",
+  "short": "Курс-игра: схема, запросы и мутации GraphQL – с проверкой каждого шага.",
+  "learn": "graphql-postman-egipet",
+  "learnFree": null,
+  "badge": [
+   "hit",
+   "Хит"
+  ]
+ },
+ {
+  "id": "itguide",
+  "title": "Тестирование ПО с нуля: поиск работы, резюме и собеседование",
+  "short": "Резюме, LinkedIn, стратегия откликов, этапы найма и переговоры об оффере.",
+  "learn": "kak-iskat-rabotu",
+  "learnFree": null,
+  "badge": null
+ },
+ {
+  "id": "simulator",
+  "title": "Симулятор собеседования тестировщика/QA с ИИ",
+  "short": "120+ вопросов, режим проверки знаний и бот-помощник – репетиция до настоящего собеседования.",
+  "learn": "simulyator-sobesedovaniya",
+  "learnFree": null,
+  "badge": null
+ },
+ {
+  "id": "learning",
+  "title": "Эффективное обучение: методики, ИИ и практика",
+  "short": "Как учиться так, чтобы прочитанное осталось: методики, работа с ИИ и разбор своих ошибок.",
+  "learn": "effektivnoe-obuchenie",
+  "learnFree": true,
+  "badge": null
+ }
+]
