@@ -96,7 +96,8 @@ PERSON = {
     "@type": "Person", "@id": SITE + "/#person", "name": "Артем Русов", "alternateName": "Artsiom Rusau",
     "jobTitle": "Инженер по тестированию и автор курсов по тестированию ПО", "url": SITE + "/",
     "sameAs": ["https://learn.rusau.net", "https://rusau.net", "https://youtube.com/@rusau", "https://t.me/qachanell",
-               "https://stepik.org/users/rusau/profile", "https://www.linkedin.com/in/artsiomrusau/", "https://github.com/artichokeee"],
+               "https://stepik.org/users/rusau/profile", "https://www.linkedin.com/in/artsiomrusau/", "https://github.com/artichokeee",
+               "https://www.wikidata.org/wiki/Q142195657"],
 }
 
 def course_link(cid, camp):
@@ -361,7 +362,7 @@ def main():
     home_ld = {"@context": "https://schema.org", "@graph": [PERSON,
         {"@type": "WebSite", "name": "Артем Русов", "url": SITE + "/", "inLanguage": "ru", "author": {"@id": SITE + "/#person"}},
         {"@type": "EducationalOrganization", "name": "Rusau Learn", "url": LEARN, "description": "Платформа для обучения тестировщиков",
-         "founder": {"@id": SITE + "/#person"}},
+         "founder": {"@id": SITE + "/#person"}, "sameAs": ["https://www.wikidata.org/wiki/Q142195746"]},
         {"@type": "ItemList", "name": "Курсы по тестированию ПО", "itemListElement": [
             {"@type": "ListItem", "position": i + 1, "item": {"@type": "Course", "name": noyo(COURSES[c]["title"]), "description": noyo(COURSES[c]["short"]),
              "url": f"{LEARN}/catalog/{COURSES[c]['learn']}", "inLanguage": "ru", "isAccessibleForFree": bool(COURSES[c].get("learnFree")),
