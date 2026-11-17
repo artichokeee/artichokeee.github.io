@@ -4,6 +4,9 @@
 
 ## Разделы
 - [Тестовые задания](https://artichokeee.github.io/zadaniya/): 54 задания по API, вебу, мобильному тестированию, SQL, тест-дизайну и документации
+- [SQL-песочница](https://artichokeee.github.io/qa-tools/sql/): учебная база интернет-магазина с багами в данных, SQL прямо в браузере
+- [50 вопросов на собеседовании тестировщика](https://github.com/artichokeee/qa-interview-questions): Junior QA, короткие ответы
+- [Stepik API cookbook](https://github.com/artichokeee/stepik-api-cookbook): практические заметки по API Stepik для авторов курсов
 - [Rusau Learn](https://learn.rusau.net): курсы, разборы и тренажеры по тестированию ПО
 - [Описание платформы для ИИ](https://learn.rusau.net/llms.txt)
 

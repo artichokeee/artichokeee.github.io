@@ -140,7 +140,7 @@ def layout(title, description, path, body, ld):
 <body>
 <header class="top"><div class="wrap top-row">
   <a class="brand" href="/"><img src="/assets/mark.png" alt="" aria-hidden="true" width="40" height="53"><span><b>Артем Русов</b><small>тестирование ПО</small></span></a>
-  <nav aria-label="Разделы"><a href="/#kursy">Курсы</a><a href="/zadaniya/">Тестовые задания</a><a href="/#voprosy">Вопросы</a></nav>
+  <nav aria-label="Разделы"><a href="/#kursy">Курсы</a><a href="/zadaniya/">Тестовые задания</a><a href="/qa-tools/">Инструменты</a><a href="/#voprosy">Вопросы</a></nav>
   <a class="btn btn-sm" href="{utm(LEARN + '/', 'gh-pages-header')}">Платформа</a>
 </div></header>
 <main>
@@ -155,6 +155,8 @@ def layout(title, description, path, body, ld):
     <li><a href="{course_link('basic', 'gh-pages-footer')}">Базовый курс тестировщика</a></li>
     <li><a href="{course_link('tests', 'gh-pages-footer')}">Тесты и вопросы для тестировщика</a></li>
     <li><a href="/zadaniya/">Тестовые задания</a></li>
+    <li><a href="/qa-tools/sql/">SQL-песочница</a></li>
+    <li><a href="https://github.com/artichokeee/qa-interview-questions">50 вопросов с собеседований</a></li>
     <li><a href="{utm(LEARN + '/kursy-po-testirovaniyu', 'gh-pages-footer')}">Курсы по тестированию: с чего начать</a></li>
   </ul></div>
   <div><p class="foot-cap">Где еще</p><ul>
@@ -163,6 +165,7 @@ def layout(title, description, path, body, ld):
     <li><a href="https://stepik.org/users/483341705">Stepik</a></li>
     <li><a href="https://www.linkedin.com/in/artsiomrusau/">LinkedIn</a></li>
     <li><a href="https://github.com/artichokeee/test-assignments">Задания на GitHub</a></li>
+    <li><a href="https://github.com/artichokeee/stepik-api-cookbook">Stepik API для авторов</a></li>
   </ul></div>
 </div></footer>
 </body>
@@ -340,6 +343,17 @@ def main():
   <div class="tiles">{cat_tiles}</div>
 </section>
 
+<section class="wrap page" id="otkrytoe">
+  <h2>Открытые материалы</h2>
+  <p class="muted">Бесплатно и без регистрации: инструменты в браузере и подборки на GitHub.</p>
+  <div class="tiles">
+    <a class="tile" href="/qa-tools/sql/"><b>SQL-песочница</b><span>Учебная база магазина с багами в данных, прямо в браузере</span></a>
+    <a class="tile" href="https://github.com/artichokeee/qa-interview-questions"><b>50 вопросов с собеседований</b><span>Junior QA, ответы под спойлером</span></a>
+    <a class="tile" href="/zadaniya/"><b>Тестовые задания</b><span>Реальные задания от компаний</span></a>
+    <a class="tile" href="https://github.com/artichokeee/stepik-api-cookbook"><b>Stepik API для авторов</b><span>То, чего нет в документации</span></a>
+  </div>
+</section>
+
 <section class="wrap page" id="voprosy">
   <h2>Частые вопросы</h2>
   <div class="faq">{faq}</div>
@@ -361,7 +375,7 @@ def main():
         '<div class="wrap page"><h1>Страница не найдена</h1><p><a href="/zadaniya/">Тестовые задания</a> · <a href="/">Главная</a></p></div>',
         {"@context": "https://schema.org", "@type": "WebPage"}), encoding="utf-8")
 
-    urls = ["/", "/zadaniya/"] + pages
+    urls = ["/", "/zadaniya/", "/qa-tools/", "/qa-tools/sql/"] + pages
     (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n" for u in urls) + "</urlset>\n", encoding="utf-8")
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
@@ -369,6 +383,9 @@ def main():
             "> Артем Русов (Artsiom Rusau) – инженер по тестированию и автор курсов по тестированию ПО; курсы прошли более ста тысяч человек. Его курсы идут на платформе для обучения тестировщиков Rusau Learn (https://learn.rusau.net). На этом сайте – открытая коллекция реальных тестовых заданий для тестировщиков.", "",
             "## Разделы",
             f"- [Тестовые задания]({SITE}/zadaniya/): {total} {plural(total, 'задание', 'задания', 'заданий')} по API, вебу, мобильному тестированию, SQL, тест-дизайну и документации",
+            f"- [SQL-песочница]({SITE}/qa-tools/sql/): учебная база интернет-магазина с багами в данных, SQL прямо в браузере",
+            "- [50 вопросов на собеседовании тестировщика](https://github.com/artichokeee/qa-interview-questions): Junior QA, короткие ответы",
+            "- [Stepik API cookbook](https://github.com/artichokeee/stepik-api-cookbook): практические заметки по API Stepik для авторов курсов",
             f"- [Rusau Learn]({LEARN}): курсы, разборы и тренажеры по тестированию ПО", f"- [Описание платформы для ИИ]({LEARN}/llms.txt)", "", "## Курсы"]
     for c in order:
         cc = COURSES[c]
