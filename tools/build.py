@@ -74,6 +74,8 @@ def scrub(t):
     # of the task ("Логин: от 3 до 20 символов…") and must stay.
     t = re.sub(r"(?i)(\b(логин|пароль|login|password)\b\s*[:=][ \t]*)([^\s,;]{1,80})(?=[ \t]*(\n|$|[,;.]|[ \t]+(и|and|логин|пароль|login|password|api_version|перейти)\b))", r"\1[скрыто]", t)
     t = re.sub(r"https?://\d{1,3}(\.\d{1,3}){3}\S*", "[адрес стенда компании скрыт]", t)
+    # Invitations to a company's private chat are not ours to spread.
+    t = re.sub(r"https?://t\.me/(joinchat/|\+)\S+", "[ссылка на закрытый чат компании скрыта]", t)
     t = re.sub(r"[\w.+-]+@[\w-]+\.[\w.-]+", lambda m: m.group(0) if TEST_MAIL.search(m.group(0)) else "[почта скрыта]", t)
     return t
 
