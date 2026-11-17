@@ -5,6 +5,9 @@
 ## Разделы
 - [Тестовые задания](https://artichokeee.github.io/zadaniya/): 54 задания по API, вебу, мобильному тестированию, SQL, тест-дизайну и документации
 - [SQL-песочница](https://artichokeee.github.io/qa-tools/sql/): учебная база интернет-магазина с багами в данных, SQL прямо в браузере
+- [Кроссворд тестировщика](https://artichokeee.github.io/qa-tools/crossword/): термины тестирования ПО, новый кроссворд каждый день
+- [Калькулятор граничных значений](https://artichokeee.github.io/qa-tools/bounds/): границы и классы эквивалентности по минимуму, максимуму и шагу
+- [Найди баги на странице](https://artichokeee.github.io/qa-tools/bugs/): страница интернет-магазина с 10 ошибками в интерфейсе
 - [50 вопросов на собеседовании тестировщика](https://github.com/artichokeee/qa-interview-questions): Junior QA, короткие ответы
 - [Stepik API cookbook](https://github.com/artichokeee/stepik-api-cookbook): практические заметки по API Stepik для авторов курсов
 - [Rusau Learn](https://learn.rusau.net): курсы, разборы и тренажеры по тестированию ПО

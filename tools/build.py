@@ -155,7 +155,7 @@ def layout(title, description, path, body, ld):
     <li><a href="{course_link('basic', 'gh-pages-footer')}">Базовый курс тестировщика</a></li>
     <li><a href="{course_link('tests', 'gh-pages-footer')}">Тесты и вопросы для тестировщика</a></li>
     <li><a href="/zadaniya/">Тестовые задания</a></li>
-    <li><a href="/qa-tools/sql/">SQL-песочница</a></li>
+    <li><a href="/qa-tools/">Инструменты тестировщика</a></li>
     <li><a href="https://github.com/artichokeee/qa-interview-questions">50 вопросов с собеседований</a></li>
     <li><a href="{utm(LEARN + '/kursy-po-testirovaniyu', 'gh-pages-footer')}">Курсы по тестированию: с чего начать</a></li>
   </ul></div>
@@ -347,7 +347,7 @@ def main():
   <h2>Открытые материалы</h2>
   <p class="muted">Бесплатно и без регистрации: инструменты в браузере и подборки на GitHub.</p>
   <div class="tiles">
-    <a class="tile" href="/qa-tools/sql/"><b>SQL-песочница</b><span>Учебная база магазина с багами в данных, прямо в браузере</span></a>
+    <a class="tile" href="/qa-tools/"><b>Инструменты тестировщика</b><span>SQL-песочница, кроссворд, граничные значения, поиск багов</span></a>
     <a class="tile" href="https://github.com/artichokeee/qa-interview-questions"><b>50 вопросов с собеседований</b><span>Junior QA, ответы под спойлером</span></a>
     <a class="tile" href="/zadaniya/"><b>Тестовые задания</b><span>Реальные задания от компаний</span></a>
     <a class="tile" href="https://github.com/artichokeee/stepik-api-cookbook"><b>Stepik API для авторов</b><span>То, чего нет в документации</span></a>
@@ -375,7 +375,7 @@ def main():
         '<div class="wrap page"><h1>Страница не найдена</h1><p><a href="/zadaniya/">Тестовые задания</a> · <a href="/">Главная</a></p></div>',
         {"@context": "https://schema.org", "@type": "WebPage"}), encoding="utf-8")
 
-    urls = ["/", "/zadaniya/", "/qa-tools/", "/qa-tools/sql/"] + pages
+    urls = ["/", "/zadaniya/", "/qa-tools/", "/qa-tools/sql/", "/qa-tools/crossword/", "/qa-tools/bounds/", "/qa-tools/bugs/"] + pages
     (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n" for u in urls) + "</urlset>\n", encoding="utf-8")
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
@@ -384,6 +384,9 @@ def main():
             "## Разделы",
             f"- [Тестовые задания]({SITE}/zadaniya/): {total} {plural(total, 'задание', 'задания', 'заданий')} по API, вебу, мобильному тестированию, SQL, тест-дизайну и документации",
             f"- [SQL-песочница]({SITE}/qa-tools/sql/): учебная база интернет-магазина с багами в данных, SQL прямо в браузере",
+            f"- [Кроссворд тестировщика]({SITE}/qa-tools/crossword/): термины тестирования ПО, новый кроссворд каждый день",
+            f"- [Калькулятор граничных значений]({SITE}/qa-tools/bounds/): границы и классы эквивалентности по минимуму, максимуму и шагу",
+            f"- [Найди баги на странице]({SITE}/qa-tools/bugs/): страница интернет-магазина с 10 ошибками в интерфейсе",
             "- [50 вопросов на собеседовании тестировщика](https://github.com/artichokeee/qa-interview-questions): Junior QA, короткие ответы",
             "- [Stepik API cookbook](https://github.com/artichokeee/stepik-api-cookbook): практические заметки по API Stepik для авторов курсов",
             f"- [Rusau Learn]({LEARN}): курсы, разборы и тренажеры по тестированию ПО", f"- [Описание платформы для ИИ]({LEARN}/llms.txt)", "", "## Курсы"]
